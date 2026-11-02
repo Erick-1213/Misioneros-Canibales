@@ -1,4 +1,4 @@
-
+from collections import deque
 
 inicio= (3, 3, 1)
 meta = (0, 0, 0)
@@ -30,5 +30,31 @@ def generar_sucesores(estado):
             nuevo_estado = (misioneros + dm, canibales + dc, 1)
 
         if es_valido(nuevo_estado):
-            sucesores.append(nuevo_estado)
+            sucesores.append((nuevo_estado, (dm, dc)))
     return sucesores
+
+def busqueda_bfs(inicio, meta):
+    frontera = deque([inicio])
+    visitados = set([inicio])
+    padres = {inicio: None}  
+    nodos_expandidos = 0
+
+    while frontera:
+        nodo_actual = frontera.popleft()
+        nodos_expandidos += 1
+
+        if nodo_actual == meta:
+            camino = []
+            rastreador = meta
+            while rastreador is not None:
+                camino.append(rastreador)
+                rastreador = padres[rastreador]
+            return camino[::-1], nodos_expandidos
+
+        for sucesor, accion in generar_sucesores(nodo_actual):
+            if sucesor not in visitados:
+                visitados.add(sucesor)
+                frontera.append(sucesor)
+                padres[sucesor] = nodo_actual
+
+    return None, nodos_expandidos
