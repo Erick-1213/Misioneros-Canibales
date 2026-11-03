@@ -1,4 +1,5 @@
 from collections import deque
+import time 
 
 inicio= (3, 3, 1)
 meta = (0, 0, 0)
@@ -38,6 +39,7 @@ def busqueda_bfs(inicio, meta):
     visitados = set([inicio])
     padres = {inicio: None}  
     nodos_expandidos = 0
+    tiempo_inicio = time.perf_counter()
 
     while frontera:
         nodo_actual = frontera.popleft()
@@ -49,7 +51,8 @@ def busqueda_bfs(inicio, meta):
             while rastreador is not None:
                 camino.append(rastreador)
                 rastreador = padres[rastreador]
-            return camino[::-1], nodos_expandidos
+            tiempo_fin = time.perf_counter()
+            return camino[::-1], nodos_expandidos, tiempo_fin - tiempo_inicio
 
         for sucesor, accion in generar_sucesores(nodo_actual):
             if sucesor not in visitados:
@@ -57,13 +60,14 @@ def busqueda_bfs(inicio, meta):
                 frontera.append(sucesor)
                 padres[sucesor] = nodo_actual
 
-    return None, nodos_expandidos
+    return None, nodos_expandidos, 0
 
 def busqueda_dfs(inicio, meta):
     frontera = [inicio]
     visitados = set([inicio])
     padres = {inicio: None}  
     nodos_expandidos = 0
+    tiempo_inicio = time.perf_counter()
 
     while frontera:
         nodo_actual = frontera.pop()
@@ -75,7 +79,8 @@ def busqueda_dfs(inicio, meta):
             while rastreador is not None:
                 camino.append(rastreador)
                 rastreador = padres[rastreador]
-            return camino[::-1], nodos_expandidos
+            tiempo_fin = time.perf_counter()
+            return camino[::-1], nodos_expandidos, tiempo_fin - tiempo_inicio
 
         for sucesor, accion in generar_sucesores(nodo_actual):
             if sucesor not in visitados:
@@ -83,19 +88,20 @@ def busqueda_dfs(inicio, meta):
                 frontera.append(sucesor)
                 padres[sucesor] = nodo_actual
 
-    return None, nodos_expandidos
+    return None, nodos_expandidos, 0
 
 
-camino_dfs, nodos_dfs = busqueda_dfs(inicio, meta)
+camino_dfs, nodos_dfs, tiempo_dfs = busqueda_dfs(inicio, meta)
 print("\n DFS")
 print("Camino encontrado:", camino_dfs)
 print("Nodos expandidos:", nodos_dfs)
 print("Longitud:", len(camino_dfs) - 1 if camino_dfs else 0)
+print("Tiempo de ejecución:", tiempo_dfs)
 
 
-camino_bfs, nodos_bfs = busqueda_bfs(inicio, meta)
+camino_bfs, nodos_bfs, tiempo_bfs = busqueda_bfs(inicio, meta)
 print("\n BFS")
 print("Camino encontrado:", camino_bfs)
 print("Nodos expandidos:", nodos_bfs)
 print("Longitud:", len(camino_bfs) - 1 if camino_bfs else 0)
-
+print("Tiempo de ejecución:", tiempo_bfs)
