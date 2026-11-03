@@ -58,3 +58,44 @@ def busqueda_bfs(inicio, meta):
                 padres[sucesor] = nodo_actual
 
     return None, nodos_expandidos
+
+def busqueda_dfs(inicio, meta):
+    frontera = [inicio]
+    visitados = set([inicio])
+    padres = {inicio: None}  
+    nodos_expandidos = 0
+
+    while frontera:
+        nodo_actual = frontera.pop()
+        nodos_expandidos += 1
+
+        if nodo_actual == meta:
+            camino = []
+            rastreador = meta
+            while rastreador is not None:
+                camino.append(rastreador)
+                rastreador = padres[rastreador]
+            return camino[::-1], nodos_expandidos
+
+        for sucesor, accion in generar_sucesores(nodo_actual):
+            if sucesor not in visitados:
+                visitados.add(sucesor)
+                frontera.append(sucesor)
+                padres[sucesor] = nodo_actual
+
+    return None, nodos_expandidos
+
+
+camino_dfs, nodos_dfs = busqueda_dfs(inicio, meta)
+print("\n DFS")
+print("Camino encontrado:", camino_dfs)
+print("Nodos expandidos:", nodos_dfs)
+print("Longitud:", len(camino_dfs) - 1 if camino_dfs else 0)
+
+
+camino_bfs, nodos_bfs = busqueda_bfs(inicio, meta)
+print("\n BFS")
+print("Camino encontrado:", camino_bfs)
+print("Nodos expandidos:", nodos_bfs)
+print("Longitud:", len(camino_bfs) - 1 if camino_bfs else 0)
+
